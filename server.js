@@ -52,10 +52,27 @@ app.use(express.json()); // parse json bodies
 // ROUTES
 ////////////////////////////////
 // create a test route
-app.get("/", (req, res) => {
-  res.send("hello world");
-});
+// app.get("/", (req, res) => {
+//   res.send("hello world");
+// above is the simple version below is the more complex version that pulls from mongodb  });
+app.get("/", async (req, res) => {
+  try {
+    // Fetch the object from the database
+    const object = await People.findOne({}); // Assuming you want to retrieve a single object
 
+    // Check if an object is found
+    if (object) {
+      // Send the object as the response
+      res.json(object);
+    } else {
+      // If no object is found, send an appropriate message
+      res.status(404).json({ message: "No object found" });
+    }
+  } catch (error) {
+    // Send error if any occurs
+    res.status(500).json(error);
+  }
+});
 // PEOPLE INDEX ROUTE
 app.get("/people", async (req, res) => {
   try {
